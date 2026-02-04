@@ -74,48 +74,50 @@
     <div class="coin-wrapper" id="coin">
         <img src="https://purepng.com/public/uploads/large/purepng.com-gold-coinscoinscurrencygold-14215264770857sh0a.png" class="coin-img">
     </div>
+<script>
+    // 1. O'yin boshlanganda xotiradan ballarni yuklab olish
+    let count = parseInt(localStorage.getItem('myScore')) || 0;
+    
+    const scoreElement = document.getElementById('score');
+    const coinWrapper = document.getElementById('coin');
 
-    <script>
-        let count = 0;
-        const scoreElement = document.getElementById('score');
-        const coinWrapper = document.getElementById('coin');
+    // Sahifa yuklanganda saqlangan ballni ko'rsatish
+    scoreElement.innerText = count;
 
-        coinWrapper.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Brauzer zoom bo'lib ketmasligi uchun
-            
-            // Har bir barmoq tegganda ishlashi uchun (Multitouch)
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                handleInteraction(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
-            }
-        });
-
-        // Sichqoncha uchun (kompyuterda tekshirishga)
-        coinWrapper.addEventListener('mousedown', (e) => {
-            handleInteraction(e.pageX, e.pageY);
-        });
-
-        function handleInteraction(x, y) {
-            count++;
-            scoreElement.innerText = count;
-
-            // +1 yozuvini yaratish
-            const plusOne = document.createElement('div');
-            plusOne.innerText = '+1';
-            plusOne.className = 'plus-one';
-            plusOne.style.left = x + 'px';
-            plusOne.style.top = y + 'px';
-            document.body.appendChild(plusOne);
-
-            // Animatsiya tugagach elementni o'chirish
-            setTimeout(() => {
-                plusOne.remove();
-            }, 800);
-
-            // Telegram Vibratsiya
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }
+    coinWrapper.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            handleInteraction(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
         }
-    </script>
+    });
+
+    coinWrapper.addEventListener('mousedown', (e) => {
+        handleInteraction(e.pageX, e.pageY);
+    });
+
+    function handleInteraction(x, y) {
+        count++;
+        scoreElement.innerText = count;
+
+        // 2. Har bir bosishda yangi ballni xotiraga yozib qo'yish
+        localStorage.setItem('myScore', count);
+
+        const plusOne = document.createElement('div');
+        plusOne.innerText = '+1';
+        plusOne.className = 'plus-one';
+        plusOne.style.left = x + 'px';
+        plusOne.style.top = y + 'px';
+        document.body.appendChild(plusOne);
+
+        setTimeout(() => {
+            plusOne.remove();
+        }, 800);
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
+    }
+</script>
 </body>
 </html>
+
